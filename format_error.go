@@ -46,7 +46,7 @@ func (s *state) formatRecursive(err error, isOutermost bool) {
 		fmt.Fprintf(s, "\nCaused by: %s", err.Error())
 	}
 
-	switch v := err.(type) {
+	switch err.(type) {
 	case fmt.Formatter:
 		if stp, ok := err.(StackTraceProvider); ok {
 			st := stp.StackTrace()
@@ -63,7 +63,10 @@ func (s *state) formatRecursive(err error, isOutermost bool) {
 				s.endingFnName = st[0].name()
 			}
 		} else {
-			v.Format(s, 'v')
+			// print nothing, because the return value of .Error() was already
+			// printed when the head of error info was printed at the beginning of
+			// this function.
+			//fmt.Fprintf(s, "\n%s", err.Error())
 		}
 
 	default:
