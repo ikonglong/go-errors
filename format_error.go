@@ -41,9 +41,9 @@ type state struct {
 func (s *state) formatRecursive(err error, isOutermost bool) {
 	// print the head of error info
 	if isOutermost {
-		fmt.Fprintf(s, "\nError occurred: %s", err.Error())
+		fmt.Fprintf(s, "\nerror occurred: %s", err.Error())
 	} else {
-		fmt.Fprintf(s, "\nCaused by: %s", err.Error())
+		fmt.Fprintf(s, "\ncaused by: %s", err.Error())
 	}
 
 	switch err.(type) {
