@@ -162,7 +162,7 @@ func (s *Stack) StackTrace() StackTrace {
 	return f
 }
 
-func callers() *Stack {
+func Callers() *Stack {
 	const depth = 32
 	var pcs [depth]uintptr
 	n := runtime.Callers(3, pcs[:])
