@@ -141,7 +141,7 @@ type stack = Stack
 // Stack represents a stack of program counters.
 type Stack []uintptr
 
-func (s *stack) Format(st fmt.State, verb rune) {
+func (s *Stack) Format(st fmt.State, verb rune) {
 	switch verb {
 	case 'v':
 		switch {
@@ -154,7 +154,7 @@ func (s *stack) Format(st fmt.State, verb rune) {
 	}
 }
 
-func (s *stack) StackTrace() StackTrace {
+func (s *Stack) StackTrace() StackTrace {
 	f := make([]Frame, len(*s))
 	for i := 0; i < len(f); i++ {
 		f[i] = Frame((*s)[i])
