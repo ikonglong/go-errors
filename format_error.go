@@ -39,6 +39,7 @@ type state struct {
 }
 
 func (s *state) formatRecursive(err error, isOutermost bool) {
+	// print the head of error info
 	if isOutermost {
 		fmt.Fprintf(s, "\nError occurred: %s", err.Error())
 	} else {
@@ -66,7 +67,10 @@ func (s *state) formatRecursive(err error, isOutermost bool) {
 		}
 
 	default:
-		fmt.Fprintf(s, "\n%s", err.Error())
+		// print nothing, because the return value of .Error() was already
+		// printed when the head of error info was printed at the beginning of
+		// this function.
+		//fmt.Fprintf(s, "\n%s", err.Error())
 	}
 
 	cause := UnwrapOnce(err)
