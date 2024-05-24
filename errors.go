@@ -142,13 +142,17 @@ func (f *fundamental) Format(s fmt.State, verb rune) {
 
 // WithStack annotates err with a stack trace at the point WithStack was called.
 // If err is nil, WithStack returns nil.
-func WithStack(err error) error {
+func WithStack(err error, skip ...int) error {
 	if err == nil {
 		return nil
 	}
+	skipN := 1
+	if len(skip) > 0 {
+		skipN += skip[0]
+	}
 	return &withStack{
 		err,
-		Callers(),
+		Callers(skipN),
 	}
 }
 
