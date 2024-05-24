@@ -99,10 +99,14 @@ import (
 
 // New returns an error with the supplied message.
 // New also records the stack trace at the point it was called.
-func New(message string) error {
+func New(message string, skip ...int) error {
+	skipN := 1
+	if len(skip) > 0 {
+		skipN += skip[0]
+	}
 	return &fundamental{
 		msg:   message,
-		stack: Callers(),
+		stack: Callers(skipN),
 	}
 }
 
@@ -112,7 +116,14 @@ func New(message string) error {
 func Errorf(format string, args ...interface{}) error {
 	return &fundamental{
 		msg:   fmt.Sprintf(format, args...),
-		stack: Callers(),
+		stack: Callers(1),
+	}
+}
+
+func Errorf2(skip int, format string, args ...interface{}) error {
+	return &fundamental{
+		msg:   fmt.Sprintf(format, args...),
+		stack: Callers(skip + 1),
 	}
 }
 
@@ -185,7 +196,7 @@ func (w *withStack) Format(s fmt.State, verb rune) {
 // Wrap returns an error annotating err with a stack trace
 // at the point Wrap is called, and the supplied message.
 // If err is nil, Wrap returns nil.
-func Wrap(err error, message string) error {
+func Wrap(err error, message string, skip ...int) error {
 	if err == nil {
 		return nil
 	}
@@ -193,9 +204,13 @@ func Wrap(err error, message string) error {
 		cause: err,
 		msg:   message,
 	}
+	skipN := 1
+	if len(skip) > 0 {
+		skipN += skip[0]
+	}
 	return &withStack{
 		err,
-		Callers(),
+		Callers(skipN),
 	}
 }
 
@@ -212,7 +227,21 @@ func Wrapf(err error, format string, args ...interface{}) error {
 	}
 	return &withStack{
 		err,
-		Callers(),
+		Callers(1),
+	}
+}
+
+func Wrapf2(err error, skip int, format string, args ...interface{}) error {
+	if err == nil {
+		return nil
+	}
+	err = &withMessage{
+		cause: err,
+		msg:   fmt.Sprintf(format, args...),
+	}
+	return &withStack{
+		err,
+		Callers(skip + 1),
 	}
 }
 
